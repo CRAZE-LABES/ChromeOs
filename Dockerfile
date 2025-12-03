@@ -12,13 +12,15 @@ RUN apt-get update && apt-get install -y \
     --no-install-recommends
 
 # Add Chrome repository
-RUN wget -q -O /usr/share/keyrings/google-key.gpg https://dl.google.com/linux/linux_signing_key.pub && \
-    echo "deb [arch=amd64 signed-by=/usr/share/keyrings/google-key.gpg] http://dl.google.com/linux/chrome/deb/ stable main" \
-      > /etc/apt/sources.list.d/google.list
+# Add Google Chrome repo with proper key (Debian bookworm style)
+RUN wget -qO- https://dl.google.com/linux/linux_signing_key.pub \
+    | gpg --dearmor > /usr/share/keyrings/google-linux.gpg && \
+    echo "deb [arch=amd64 signed-by=/usr/share/keyrings/google-linux.gpg] http://dl.google.com/linux/chrome/deb/ stable main" \
+      > /etc/apt/sources.list.d/google-chrome.list
 
 # Install Chrome
-RUN apt-get update && apt-get install -y google-chrome-stable --no-install-recommends
-
+RUN apt-get update && \
+    apt-get install -y google-chrome-stable --no-install-recommends
 # Install NodeJS (FAST method)
 RUN apt-get install -y curl && \
     curl -fsSL https://deb.nodesource.com/setup_18.x | bash - && \
