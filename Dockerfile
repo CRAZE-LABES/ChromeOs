@@ -37,10 +37,15 @@ RUN wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | apt-key add
 # Install Node.js + npm
 RUN apt-get update && apt-get install -y nodejs npm
 
-# Set working directory
 WORKDIR /app
 
-# Copy files
+# Copy package files first
+COPY package.json ./
+
+# RUN npm install
+RUN npm install
+
+# Copy rest of the files
 COPY . .
 
 CMD ["node", "main.js"]
