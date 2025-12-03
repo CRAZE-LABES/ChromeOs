@@ -15,11 +15,12 @@ const puppeteer = require("puppeteer");
   });
 
   const page = await browser.newPage();
-
-  // Your work here
   await page.goto("https://example.com");
 
   console.log("Loaded:", await page.title());
 
-  await browser.close();
+  // FIX: prevent Render from stopping the app
+  setInterval(() => {
+    console.log("Running...");
+  }, 30000);
 })();
