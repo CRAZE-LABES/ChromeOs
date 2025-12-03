@@ -1,4 +1,5 @@
 const puppeteer = require("puppeteer");
+const http = require("http");
 
 (async () => {
   const browser = await puppeteer.launch({
@@ -16,11 +17,17 @@ const puppeteer = require("puppeteer");
 
   const page = await browser.newPage();
   await page.goto("https://example.com");
+  console.log("Loaded Title:", await page.title());
 
-  console.log("Loaded:", await page.title());
-
-  // FIX: prevent Render from stopping the app
+  // keep puppeteer alive (optional)
   setInterval(() => {
-    console.log("Running...");
+    console.log("Running…");
   }, 30000);
 })();
+
+// REQUIRED FOR RENDER WEB SERVICE
+http.createServer((req, res) => {
+  res.end("Puppeteer Chrome Service Running");
+}).listen(process.env.PORT || 3000, () => {
+  console.log("Server started on port", process.env.PORT || 3000);
+});
